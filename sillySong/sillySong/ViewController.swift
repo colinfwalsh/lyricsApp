@@ -10,7 +10,7 @@ import UIKit
 
 
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var lyricsView: UITextView!
@@ -31,27 +31,33 @@ class ViewController: UIViewController {
     func shortNameFromName(name: String) -> String {
         let vowels = CharacterSet(charactersIn: "aeiou")
         if let range = name.rangeOfCharacter(from: vowels) {
-            return String(name[range.lowerBound...])
+            if name[range.lowerBound] == name.first! {
+                return name
+            } else {
+                return String(name[range.lowerBound...])
+                
+            }
         } else {
-            return ""
+            return name
         }
     }
     
-    func lyricsForName(_ name: String, template: String) -> String {
+    func lyricsForName(_ name: String,_ template: String) -> String {
         
-        let replaceName = template.replacingOccurrences(of: "<FULL_NAME>", with: "\(name.lowercased())")
-        let finalTemplate = replaceName.replacingOccurrences(of: "<SHORT_NAME>", with: shortNameFromName(name: "\(name)"))
+        let replaceName = template.replacingOccurrences(of: "<FULL_NAME>", with: "\(name)")
+        let finalTemplate = replaceName.replacingOccurrences(of: "<SHORT_NAME>", with: shortNameFromName(name: "\(name.lowercased())"))
         
         return finalTemplate
     }
     
     @IBAction func reset(_ sender: Any) {
+        nameField.text = ""
         lyricsView.text = ""
     }
     
     @IBAction func displayLyrics(_ sender: Any) {
         guard let name = nameField.text else {return}
-        lyricsView.text = lyricsForName(name, template: bananaFanaTemplate)
+        lyricsView.text = lyricsForName(name, bananaFanaTemplate)
     }
     
     override func didReceiveMemoryWarning() {
